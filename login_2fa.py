@@ -1,12 +1,16 @@
 import asyncio
+import os
 import re
 
 import httpx
+from dotenv import load_dotenv
+
+load_dotenv()
 
 ODOO_URL = "https://frbe-kbsb.odoo.com"
 DB = "frbe-kbsb"
 USER = "ruben.decrop@gmail.com"
-
+PASSWORD = os.getenv("PASSWORD")
 
 
 async def main():
@@ -43,8 +47,10 @@ async def main():
                     "csrf_token": csrf_match.group(1),
                 },
             )
+        else:
+            print("2FA is niet actief voor deze gebruiker")
 
-        print(f"Login response: {response.url}")
+        print(f"Login response: {response.status_code} {response.url}")
 
 
 if __name__ == "__main__":
