@@ -1,28 +1,16 @@
-import xmlrpc.client
+import httpx
+from reddevil.core import get_secret, register_app
 
-url = "https://frbe-kbsb.odoo.com"
-db = "frbe-kbsb"
-username = "ruben.decrop@gmail.com"  # Portal user login
-password = "wz1knbgGM"  # Password or API Key
+# setup reddevil
+register_app(None, "settings", "")
 
-# 1. Authenticate to get User ID (uid)
-common = xmlrpc.client.ServerProxy(f"{url}/xmlrpc/2/common")
-uid = common.authenticate(db, username, password, {})
+# get odoo_secrets
+odoo_secrets = get_secret("odoo")
+url = odoo_secrets.get("url")
+db = odoo_secrets.get("db")
+username = odoo_secrets.get("username")
+password = odoo_secrets.get("password")
 
-if not uid:
-    raise Exception(
-        "Authentication failed: Check DB name, username, or password/API key."
-    )
-
-print(f"Successfully authenticated! User ID (uid): {uid}")
-
-
-models = xmlrpc.client.ServerProxy(f"{url}/xmlrpc/2/object")
-
-# Read key profile fields from res.users
-profile_fields = [
-    "partner_id",
-]
 
 user_profile = models.execute_kw(
     db, uid, password, "res.users", "read", [[uid]], {"fields": profile_fields}
