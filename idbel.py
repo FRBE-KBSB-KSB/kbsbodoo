@@ -1,14 +1,14 @@
 import httpx
-from reddevil.core import get_secret, register_app
+from reddevil.core import get_secret, get_setting, register_app
 
 # setup reddevil
 register_app(None, "settings", "")
 
-# get odoo_secrets
+# odoo variables
 odoo_secrets = get_secret("odoo")
-url = odoo_secrets.get("url")
-db = odoo_secrets.get("db")
-username = odoo_secrets.get("username")
+odoo_params = get_setting("ODOO_CONNECTION_PARAMETERS")
+url = odoo_params.get("url")
+db = odoo_params.get("db")
 password = odoo_secrets.get("password")
 
 
@@ -39,4 +39,4 @@ try:
     results = response.json()
 except Exception as e:
     raise e
-print("results", results)
+print("idbel:", results[0]["x_studio_contact_nationalid_int"])
